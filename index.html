@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>Silver.Stone — Long Press Menu</title>
+<title>Silver.Stone — Product Menu</title>
 
 <style>
   * {
@@ -19,7 +19,6 @@
     background: #e7e1d5;
     color: #111;
     font-family: Georgia, "Times New Roman", serif;
-    overflow: hidden;
   }
 
   .page {
@@ -30,47 +29,51 @@
     border-top: 3px solid #111;
     border-bottom: 1px solid #111;
     padding: 12px 0;
-    margin-bottom: 24px;
-    text-transform: uppercase;
-    letter-spacing: -1px;
-    font-size: clamp(28px, 5vw, 56px);
+    margin-bottom: 40px;
     text-align: center;
+    text-transform: uppercase;
+    font-size: clamp(30px, 5vw, 56px);
   }
 
-  .product {
+  /* PRODUCT AREA */
+
+  .product-wrap {
     width: min(370px, 85vw);
     margin: auto;
     position: relative;
-    cursor: grab;
-    user-select: none;
-    touch-action: none;
+    padding-bottom: 55px;
+  }
+
+  .product {
+    position: relative;
+    z-index: 10;
 
     background: #eee8dc;
-    border: 1px solid #181818;
+    border: 1px solid #111;
     padding: 10px;
 
     transition:
-      transform 240ms cubic-bezier(.2,.8,.2,1),
-      box-shadow 240ms ease,
-      filter 240ms ease;
+      transform 300ms cubic-bezier(.22, 1, .36, 1),
+      box-shadow 300ms ease;
   }
 
   .product img {
-    display: block;
     width: 100%;
+    display: block;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    pointer-events: none;
-    filter: grayscale(20%) contrast(1.05);
+    filter: grayscale(15%) contrast(1.05);
   }
 
   .product-info {
     display: flex;
     justify-content: space-between;
     gap: 20px;
-    padding: 14px 3px 4px;
+
     border-top: 1px solid #111;
+
     margin-top: 10px;
+    padding: 14px 3px 4px;
   }
 
   .product-name {
@@ -78,188 +81,235 @@
   }
 
   .product-price {
-    font-size: 15px;
+    font-size: 14px;
     white-space: nowrap;
   }
 
-  .product.pressing {
-    transform: scale(0.985);
-  }
 
-  .product.menu-open {
-    transform: scale(1.035) rotate(-0.35deg);
+  /* PRODUCT LIFT WHEN MENU IS OPEN */
+
+  .product-wrap.active .product {
+    transform:
+      translateY(-5px)
+      scale(1.02)
+      rotate(-0.25deg);
+
     box-shadow:
-      0 18px 30px rgba(0,0,0,.17),
-      7px 7px 0 rgba(0,0,0,.06);
-    z-index: 20;
+      0 18px 30px rgba(0,0,0,.15),
+      6px 7px 0 rgba(0,0,0,.05);
   }
 
-  /* -----------------------------------
-     BACKDROP
-  ----------------------------------- */
 
-  .backdrop {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0;
-    background: rgba(32, 28, 21, .15);
-    backdrop-filter: blur(1.5px);
+  /* MENU BUTTON */
 
-    transition: opacity 180ms ease;
-    z-index: 10;
-  }
-
-  .backdrop.show {
-    opacity: 1;
-  }
-
-  /* -----------------------------------
-     RADIAL MENU
-  ----------------------------------- */
-
-  .radial-menu {
-    position: fixed;
-    left: 0;
-    top: 0;
-
-    width: 1px;
-    height: 1px;
-
-    z-index: 100;
-    pointer-events: none;
-  }
-
-  .menu-item {
-    --x: 0px;
-    --y: 0px;
-
+  .menu-button {
     position: absolute;
-    width: 74px;
-    height: 74px;
 
-    left: -37px;
-    top: -37px;
+    bottom: 0;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 100px;
+    height: 44px;
+
+    z-index: 50;
+
+    border: 1.7px solid #111;
+
+    background: #f3ede1;
+    color: #111;
+
+    font-family: Georgia, serif;
+    font-size: 12px;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+    border-radius:
+      47% 53% 48% 52%
+      /
+      55% 46% 54% 45%;
+
+    box-shadow: 3px 4px 0 rgba(0,0,0,.15);
+
+    transition:
+      transform 180ms ease,
+      background 180ms ease,
+      color 180ms ease;
+  }
+
+  .menu-button:hover {
+    transform:
+      translateX(-50%)
+      scale(1.06);
+  }
+
+  .product-wrap.active .menu-button {
+    background: #111;
+    color: #f3ede1;
+  }
+
+
+  /* ACTION BUTTONS */
+
+  .action {
+    position: absolute;
+
+    left: 50%;
+    bottom: 17px;
+
+    width: 75px;
+    height: 75px;
+
+    margin-left: -37px;
+
+    z-index: 30;
 
     display: grid;
     place-items: center;
 
-    text-align: center;
-    font-size: 11px;
-    line-height: 1.05;
-    text-transform: uppercase;
-    letter-spacing: .6px;
+    border: 1.7px solid #111;
 
     background: #f5efe3;
     color: #111;
 
-    border: 1.7px solid #111;
+    font-family: Georgia, serif;
 
-    /* intentionally imperfect paper cutout */
-    border-radius: 51% 44% 48% 46% / 44% 52% 45% 54%;
+    text-align: center;
+    font-size: 10px;
+    line-height: 1.15;
+
+    text-transform: uppercase;
+    letter-spacing: .6px;
+
+    cursor: pointer;
+
+    border-radius:
+      49% 51% 44% 56%
+      /
+      56% 45% 55% 44%;
+
+    box-shadow:
+      3px 4px 0 rgba(0,0,0,.14);
 
     opacity: 0;
+    pointer-events: none;
 
     transform:
       translate(0,0)
       scale(.25)
-      rotate(-10deg);
+      rotate(-12deg);
 
     transition:
-      transform 340ms cubic-bezier(.22,1.4,.36,1),
-      opacity 130ms ease,
-      background 120ms ease,
-      color 120ms ease;
-
-    box-shadow: 3px 4px 0 rgba(0,0,0,.15);
+      transform 420ms cubic-bezier(.22, 1.6, .36, 1),
+      opacity 140ms ease,
+      background 150ms ease,
+      color 150ms ease;
   }
 
-  .radial-menu.open .menu-item {
+
+  /* OPEN POSITIONS */
+
+  .product-wrap.active .action {
     opacity: 1;
-
-    transform:
-      translate(var(--x), var(--y))
-      scale(1)
-      rotate(var(--rotation));
+    pointer-events: auto;
   }
 
-  .menu-item:nth-child(1) {
+  .product-wrap.active .wishlist {
+    transform:
+      translate(-130px, -85px)
+      rotate(-7deg);
+  }
+
+  .product-wrap.active .quickview {
+    transform:
+      translate(-45px, -140px)
+      rotate(3deg);
+  }
+
+  .product-wrap.active .share {
+    transform:
+      translate(55px, -140px)
+      rotate(-3deg);
+  }
+
+  .product-wrap.active .view {
+    transform:
+      translate(140px, -85px)
+      rotate(6deg);
+  }
+
+
+  /* STAGGER */
+
+  .wishlist {
     transition-delay: 0ms;
   }
 
-  .menu-item:nth-child(2) {
-    transition-delay: 30ms;
+  .quickview {
+    transition-delay: 35ms;
   }
 
-  .menu-item:nth-child(3) {
-    transition-delay: 60ms;
+  .share {
+    transition-delay: 70ms;
   }
 
-  .menu-item:nth-child(4) {
-    transition-delay: 90ms;
+  .view {
+    transition-delay: 105ms;
   }
 
-  .menu-item.active {
-    background: #151515;
+
+  /* ACTION HOVER */
+
+  .product-wrap.active .action:hover {
+    background: #111;
     color: #f5efe3;
+    z-index: 60;
+  }
 
+  .product-wrap.active .wishlist:hover {
     transform:
-      translate(var(--x), var(--y))
-      scale(1.17)
-      rotate(var(--rotation)) !important;
-
-    box-shadow:
-      5px 6px 0 rgba(0,0,0,.15),
-      inset 0 0 0 2px #f5efe3;
+      translate(-130px, -85px)
+      scale(1.15)
+      rotate(-2deg);
   }
 
-  /* centre touch marker */
-
-  .origin {
-    position: absolute;
-    width: 22px;
-    height: 22px;
-
-    left: -11px;
-    top: -11px;
-
-    border: 1px solid rgba(0,0,0,.5);
-    border-radius: 50%;
-
-    opacity: 0;
-
-    transform: scale(.4);
-
-    transition:
-      opacity 150ms ease,
-      transform 250ms ease;
+  .product-wrap.active .quickview:hover {
+    transform:
+      translate(-45px, -140px)
+      scale(1.15)
+      rotate(-2deg);
   }
 
-  .radial-menu.open .origin {
-    opacity: .35;
-    transform: scale(1);
+  .product-wrap.active .share:hover {
+    transform:
+      translate(55px, -140px)
+      scale(1.15)
+      rotate(2deg);
   }
 
-  .hint {
-    margin-top: 25px;
-    text-align: center;
-    font-size: 13px;
-    font-style: italic;
-    opacity: .65;
+  .product-wrap.active .view:hover {
+    transform:
+      translate(140px, -85px)
+      scale(1.15)
+      rotate(2deg);
   }
+
 
   .result {
-    height: 24px;
-    margin-top: 13px;
+    margin-top: 25px;
+    height: 20px;
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
   }
+
 </style>
 </head>
 
 <body>
-
-<div class="backdrop" id="backdrop"></div>
 
 <main class="page">
 
@@ -267,391 +317,212 @@
     Silver.Stone
   </div>
 
-  <article class="product" id="product">
 
-    <!-- Replace with your jewellery image -->
-    <img
-      src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=900&q=85"
-      alt="Jewellery"
-      draggable="false"
-    />
+  <div class="product-wrap" id="productWrap">
 
-    <div class="product-info">
-      <div class="product-name">
-        Blue Topaz<br>
-        Signet
+
+    <!-- ACTIONS -->
+
+    <button
+      class="action wishlist"
+      data-action="Wishlist"
+    >
+      ♡
+      <br>
+      Wishlist
+    </button>
+
+
+    <button
+      class="action quickview"
+      data-action="Quick View"
+    >
+      ◉
+      <br>
+      Quick
+      <br>
+      View
+    </button>
+
+
+    <button
+      class="action share"
+      data-action="Share"
+    >
+      ↗
+      <br>
+      Share
+    </button>
+
+
+    <button
+      class="action view"
+      data-action="View Piece"
+    >
+      →
+      <br>
+      View
+      <br>
+      Piece
+    </button>
+
+
+
+    <!-- PRODUCT -->
+
+    <article class="product">
+
+      <img
+        src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=900&q=85"
+        alt="Jewellery"
+      />
+
+      <div class="product-info">
+
+        <div class="product-name">
+          Blue Topaz
+          <br>
+          Signet
+        </div>
+
+        <div class="product-price">
+          ₹12,500
+        </div>
+
       </div>
 
-      <div class="product-price">
-        ₹12,500
-      </div>
-    </div>
+    </article>
 
-  </article>
 
-  <div class="hint">
-    Click and hold / long press the jewellery.
+    <!-- MENU TRIGGER -->
+
+    <button
+      class="menu-button"
+      id="menuButton"
+      aria-expanded="false"
+    >
+      Menu +
+    </button>
+
   </div>
 
-  <div class="result" id="result"></div>
+
+  <div
+    class="result"
+    id="result"
+  ></div>
 
 </main>
 
 
-<div class="radial-menu" id="menu">
-
-  <div class="origin"></div>
-
-  <div
-    class="menu-item"
-    data-action="Wishlist"
-    style="
-      --x: -100px;
-      --y: -80px;
-      --rotation: -5deg;
-    "
-  >
-    ♡<br>Wishlist
-  </div>
-
-  <div
-    class="menu-item"
-    data-action="Quick View"
-    style="
-      --x: 0px;
-      --y: -120px;
-      --rotation: 3deg;
-    "
-  >
-    ◉<br>Quick<br>View
-  </div>
-
-  <div
-    class="menu-item"
-    data-action="Share"
-    style="
-      --x: 100px;
-      --y: -80px;
-      --rotation: 6deg;
-    "
-  >
-    ↗<br>Share
-  </div>
-
-  <div
-    class="menu-item"
-    data-action="View Piece"
-    style="
-      --x: 110px;
-      --y: 25px;
-      --rotation: -3deg;
-    "
-  >
-    →<br>View<br>Piece
-  </div>
-
-</div>
-
-
 <script>
-const product  = document.querySelector("#product");
-const menu     = document.querySelector("#menu");
-const backdrop = document.querySelector("#backdrop");
-const result   = document.querySelector("#result");
-const items    = [...document.querySelectorAll(".menu-item")];
 
-const LONG_PRESS_TIME = 300;
-const CANCEL_DISTANCE = 12;
-const HIT_RADIUS = 46;
+const wrapper =
+  document.querySelector("#productWrap");
 
-let pressTimer;
-let startX = 0;
-let startY = 0;
+const menuButton =
+  document.querySelector("#menuButton");
 
-let menuX = 0;
-let menuY = 0;
+const actions =
+  document.querySelectorAll(".action");
 
-let menuOpen = false;
-let activeItem = null;
-let pointerId = null;
+const result =
+  document.querySelector("#result");
 
 
-/* ----------------------------------------
-   START PRESS
------------------------------------------ */
+/* MENU TOGGLE */
 
-product.addEventListener("pointerdown", (event) => {
+menuButton.addEventListener(
+  "click",
+  event => {
 
-  if (event.button !== undefined && event.button !== 0)
-    return;
+    event.stopPropagation();
 
-  pointerId = event.pointerId;
+    const isOpen =
+      wrapper.classList.toggle("active");
 
-  startX = event.clientX;
-  startY = event.clientY;
-
-  product.classList.add("pressing");
-
-  product.setPointerCapture(pointerId);
-
-  pressTimer = setTimeout(() => {
-    openMenu(startX, startY);
-  }, LONG_PRESS_TIME);
-});
-
-
-/* ----------------------------------------
-   POINTER MOVEMENT
------------------------------------------ */
-
-product.addEventListener("pointermove", (event) => {
-
-  const dx = event.clientX - startX;
-  const dy = event.clientY - startY;
-
-  const distance = Math.hypot(dx, dy);
-
-  /*
-    Before menu opens:
-    moving too far means the user probably
-    intended to scroll rather than long press.
-  */
-
-  if (!menuOpen) {
-
-    if (distance > CANCEL_DISTANCE) {
-      cancelLongPress();
-    }
-
-    return;
-  }
-
-  updateSelection(
-    event.clientX,
-    event.clientY
-  );
-});
-
-
-/* ----------------------------------------
-   RELEASE
------------------------------------------ */
-
-product.addEventListener("pointerup", (event) => {
-
-  clearTimeout(pressTimer);
-
-  product.classList.remove("pressing");
-
-  if (menuOpen) {
-
-    updateSelection(
-      event.clientX,
-      event.clientY
+    menuButton.setAttribute(
+      "aria-expanded",
+      isOpen
     );
 
-    if (activeItem) {
+    menuButton.textContent =
+      isOpen
+        ? "Close ×"
+        : "Menu +";
 
-      const action =
-        activeItem.dataset.action;
-
-      result.textContent =
-        `Selected: ${action}`;
-
-      console.log(
-        "Silver.Stone action:",
-        action
-      );
-
-      /*
-        Hook real actions here:
-
-        Wishlist    → addWishlist()
-        Quick View  → openQuickView()
-        Share       → navigator.share()
-        View Piece  → navigate()
-      */
-    }
-
-    closeMenu();
   }
-});
-
-
-product.addEventListener(
-  "pointercancel",
-  closeMenu
 );
 
 
-/* ----------------------------------------
-   OPEN MENU
------------------------------------------ */
+/* ACTIONS */
 
-function openMenu(x, y) {
+actions.forEach(action => {
 
-  menuOpen = true;
+  action.addEventListener(
+    "click",
+    event => {
 
-  /*
-    Basic edge awareness.
+      event.stopPropagation();
 
-    If near right edge, move menu origin left.
-    If near top edge, move menu down.
-  */
+      const selected =
+        action.dataset.action;
 
-  const padding = 140;
+      result.textContent =
+        `Selected: ${selected}`;
 
-  menuX = Math.min(
-    Math.max(x, padding),
-    window.innerWidth - padding
+      closeMenu();
+
+    }
   );
 
-  menuY = Math.min(
-    Math.max(y, padding),
-    window.innerHeight - padding
-  );
-
-  menu.style.left = `${menuX}px`;
-  menu.style.top  = `${menuY}px`;
-
-  product.classList.remove("pressing");
-  product.classList.add("menu-open");
-
-  backdrop.classList.add("show");
-  menu.classList.add("open");
+});
 
 
-  /*
-    Short vibration on supported phones.
-  */
+/* CLICK OUTSIDE CLOSES MENU */
 
-  if (navigator.vibrate) {
-    navigator.vibrate(12);
-  }
-}
-
-
-/* ----------------------------------------
-   FIND CLOSEST ACTION
------------------------------------------ */
-
-function updateSelection(pointerX, pointerY) {
-
-  let closest = null;
-  let closestDistance = Infinity;
-
-  const menuRect =
-    menu.getBoundingClientRect();
-
-  items.forEach(item => {
-
-    const rect =
-      item.getBoundingClientRect();
-
-    const centerX =
-      rect.left + rect.width / 2;
-
-    const centerY =
-      rect.top + rect.height / 2;
-
-    const distance = Math.hypot(
-      pointerX - centerX,
-      pointerY - centerY
-    );
+document.addEventListener(
+  "click",
+  event => {
 
     if (
-      distance < HIT_RADIUS &&
-      distance < closestDistance
+      !wrapper.contains(event.target)
     ) {
-      closest = item;
-      closestDistance = distance;
+      closeMenu();
     }
-  });
 
-
-  if (closest === activeItem)
-    return;
-
-
-  items.forEach(item =>
-    item.classList.remove("active")
-  );
-
-
-  activeItem = closest;
-
-
-  if (activeItem) {
-
-    activeItem.classList.add("active");
-
-    if (navigator.vibrate) {
-      navigator.vibrate(7);
-    }
   }
-}
+);
 
 
-/* ----------------------------------------
-   CLOSE MENU
------------------------------------------ */
+/* ESCAPE CLOSES MENU */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (event.key === "Escape") {
+      closeMenu();
+    }
+
+  }
+);
+
 
 function closeMenu() {
 
-  clearTimeout(pressTimer);
+  wrapper.classList.remove("active");
 
-  menuOpen = false;
+  menuButton.textContent =
+    "Menu +";
 
-  product.classList.remove(
-    "pressing",
-    "menu-open"
+  menuButton.setAttribute(
+    "aria-expanded",
+    "false"
   );
 
-  menu.classList.remove("open");
-  backdrop.classList.remove("show");
-
-  items.forEach(item =>
-    item.classList.remove("active")
-  );
-
-  activeItem = null;
 }
 
-
-/* ----------------------------------------
-   CANCEL BEFORE LONG PRESS
------------------------------------------ */
-
-function cancelLongPress() {
-
-  clearTimeout(pressTimer);
-
-  product.classList.remove("pressing");
-}
-
-document
-  .querySelector(".product")
-  .addEventListener(
-    "click",
-    () => {
-
-      result.textContent =
-        "Open product page";
-
-    }
-  );
- 
- document
-  .querySelector(".product")
-  .addEventListener(
-    "hover",
-    () => {
-
-      result.textContent =
-        "Open product page";
-
-    }
-  );
 </script>
 
 </body>
